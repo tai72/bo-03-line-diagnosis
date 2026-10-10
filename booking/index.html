@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>無料相談のご予約（テストページ）</title>
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+      .test-notice { padding: 12px 16px; background: #c62f4a; color: #fff; font-size: 13px; font-weight: 700; text-align: center; }
+      .slot-day + .slot-day { margin-top: 14px; }
+      .slot-day__label { margin: 0 0 6px; font-size: 13px; font-weight: 700; }
+      .slots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+      .slot { padding: 8px 0; border: 1px solid var(--c-border); border-radius: 8px; background: #fbfcfb; font-size: 13px; cursor: pointer; }
+      .slot[aria-pressed="true"] { background: var(--c-accent); border-color: var(--c-accent); color: #fff; font-weight: 700; }
+      .slot:disabled { color: #b5bdb9; text-decoration: line-through; cursor: not-allowed; }
+      .choice { display: flex; gap: 16px; margin-top: 8px; font-size: 15px; }
+    </style>
+  </head>
+  <body>
+    <p class="test-notice" role="note">このページはイメージ用のテストページです。予約は確定せず、入力内容はどこにも送信されません。</p>
+
+    <main class="block">
+      <div class="container">
+        <section id="form-view">
+          <h1 class="block__title">無料相談のご予約</h1>
+          <p class="top__lead">ご都合のよい日時を選んでください（所要時間：約30分・オンライン）。</p>
+
+          <form class="card" id="booking-form" novalidate style="margin-top: 16px">
+            <div class="field">
+              <span class="field__label">日時</span>
+              <div id="slot-list" style="margin-top: 8px"></div>
+            </div>
+
+            <div class="field">
+              <span class="field__label">相談方法</span>
+              <div class="choice">
+                <label><input type="radio" name="method" value="オンライン会議" checked /> オンライン会議</label>
+                <label><input type="radio" name="method" value="電話" /> 電話</label>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="name">お名前</label>
+              <input class="field__text" id="name" type="text" maxlength="40" autocomplete="name" />
+            </div>
+            <div class="field">
+              <label class="field__label" for="shop">店舗名（任意）</label>
+              <input class="field__text" id="shop" type="text" maxlength="60" autocomplete="organization" />
+            </div>
+
+            <p class="error" id="form-error" aria-live="polite" hidden></p>
+            <button class="btn" type="submit">この内容で予約する</button>
+          </form>
+        </section>
+
+        <section id="done-view" hidden>
+          <h1 class="block__title">ご予約を受け付けました（テスト）</h1>
+          <div class="card">
+            <p id="done-summary" style="margin: 0; white-space: pre-line"></p>
+          </div>
+          <div class="consult">
+            <p>実際の運用では、ここで予約確定のご案内と、オンライン会議のURLをお送りします。<br />※このページはテスト用のため、予約は確定していません。</p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      const TIMES = ['10:00', '13:00', '15:00', '17:00'];
+      const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
+      const slotList = document.querySelector('#slot-list');
+      const formError = document.querySelector('#form-error');
+      let selected = null;
+
+      // 明日から5営業日分の枠を表示する（一部は埋まっている体裁）
+      function buildSlots() {
+        const date = new Date();
+        let days = 0;
+        while (days < 5) {
+          date.setDate(date.getDate() + 1);
+          if (date.getDay() === 0 || date.getDay() === 6) continue;
+          days += 1;
+
+          const label = `${date.getMonth() + 1}/${date.getDate()}（${WEEKDAYS[date.getDay()]}）`;
+          const day = document.createElement('div');
+          day.className = 'slot-day';
+          day.innerHTML = `<p class="slot-day__label">${label}</p><div class="slots"></div>`;
+
+          TIMES.forEach((time, i) => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'slot';
+            button.textContent = time;
+            button.setAttribute('aria-pressed', 'false');
+            button.disabled = (days + i) % 3 === 0;
+            button.addEventListener('click', () => {
+              slotList.querySelectorAll('.slot').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+              button.setAttribute('aria-pressed', 'true');
+              selected = `${label} ${time}`;
+            });
+            day.querySelector('.slots').append(button);
+          });
+          slotList.append(day);
+        }
+      }
+
+      document.querySelector('#booking-form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const name = document.querySelector('#name').value.trim();
+        const shop = document.querySelector('#shop').value.trim();
+        const method = document.querySelector('input[name="method"]:checked').value;
+
+        const message = !selected ? '日時を選択してください。' : !name ? 'お名前を入力してください。' : '';
+        formError.textContent = message;
+        formError.hidden = !message;
+        if (message) return;
+
+        document.querySelector('#done-summary').textContent = [
+          `日時：${selected}`,
+          `相談方法：${method}`,
+          `お名前：${name}`,
+          ...(shop ? [`店舗名：${shop}`] : []),
+        ].join('\n');
+        document.querySelector('#form-view').hidden = true;
+        document.querySelector('#done-view').hidden = false;
+        window.scrollTo({ top: 0 });
+      });
+
+      buildSlots();
+    </script>
+  </body>
+</html>
