@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>売上シミュレーション</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <main class="block">
+      <div class="container">
+        <p class="banner" id="banner" aria-live="polite" hidden></p>
+
+        <section id="input-view">
+          <h1 class="block__title">数字を入力してください</h1>
+          <form class="card" id="sim-form" novalidate>
+            <div class="field">
+              <label class="field__label" for="ad-budget">月の広告費</label>
+              <span class="field__hint">万円単位・整数</span>
+              <div class="field__row"><input id="ad-budget" type="number" inputmode="numeric" min="1" step="1" placeholder="10" /><span class="field__unit">万円</span></div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="close-rate">成約率</label>
+              <span class="field__hint">来店した人のうち契約に至る割合</span>
+              <div class="field__row"><input id="close-rate" type="number" inputmode="decimal" min="0" max="100" step="0.1" placeholder="50" /><span class="field__unit">%</span></div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="unit-price">1件あたりの単価</label>
+              <span class="field__hint">万円単位・整数</span>
+              <div class="field__row"><input id="unit-price" type="number" inputmode="numeric" min="1" step="1" placeholder="30" /><span class="field__unit">万円</span></div>
+            </div>
+
+            <h2 class="field-group-title">店舗情報（任意）</h2>
+            <div class="field">
+              <label class="field__label" for="shop-name">店舗名</label>
+              <input class="field__text" id="shop-name" type="text" maxlength="60" autocomplete="organization" />
+            </div>
+            <div class="field">
+              <label class="field__label" for="area">エリア</label>
+              <input class="field__text" id="area" type="text" maxlength="40" placeholder="例）〇〇県〇〇市" />
+            </div>
+
+            <p class="error" id="form-error" aria-live="polite" hidden></p>
+            <button class="btn" id="submit-btn" type="submit" disabled>結果をLINEで受け取る</button>
+          </form>
+        </section>
+
+        <section id="result-view" hidden>
+          <h1 class="block__title">シミュレーション結果</h1>
+          <div class="card">
+            <dl class="metrics">
+              <div class="metric"><dt>見込み来店数</dt><dd id="out-visits">—</dd></div>
+              <div class="metric"><dt>見込み成約数</dt><dd id="out-deals">—</dd></div>
+              <div class="metric"><dt>広告費</dt><dd id="out-budget">—</dd></div>
+            </dl>
+            <div class="total">
+              <p class="total__label">見込み売上（月）</p>
+              <p class="total__value" id="out-sales">—</p>
+            </div>
+            <p class="conditions" id="out-conditions"></p>
+          </div>
+
+          <div class="consult">
+            <p>トーク画面で「無料相談」と送ると、この結果をもとに担当者からご連絡します。</p>
+          </div>
+
+          <button class="btn" id="close-btn" type="button">トーク画面に戻る</button>
+          <button class="btn btn--ghost" id="retry-btn" type="button">数字を変えてやり直す</button>
+
+          <p class="disclaimer">表示される数値は入力値と仮定の来店単価から計算した目安で、成果を約束するものではありません。</p>
+        </section>
+      </div>
+    </main>
+
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>売上シミュレーション（デモ）</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="container">
+        <span class="top__badge">DEMO</span>
+        <h1 class="top__title">広告費から売上の目安を<br />LINEでシミュレーション</h1>
+        <p class="top__lead">3つの数字を入れるだけで、見込みの来店数・成約数・売上がわかります。</p>
+      </div>
+    </header>
+
+    <main class="block">
+      <div class="container">
+        <h2 class="block__title">ご利用の流れ</h2>
+        <ol class="steps">
+          <li>LINEで友だち追加</li>
+          <li>届いたリンクから数字を入力</li>
+          <li>シミュレーション結果がLINEに届く</li>
+        </ol>
+
+        <a class="btn" id="friend-add-link" href="#">LINEで友だち追加してはじめる</a>
+        <p class="note">シミュレーションは無料です。</p>
+      </div>
+    </main>
+
+    <script type="module">
+      import { FRIEND_ADD_URL } from './config.js';
+      document.querySelector('#friend-add-link').href = FRIEND_ADD_URL;
+    </script>
+  </body>
+</html>
